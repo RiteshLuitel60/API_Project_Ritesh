@@ -31,7 +31,7 @@ class EntityAdapter(
 
         init {
             binding.root.setOnClickListener {
-                val position = absoluteAdapterPosition
+                val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onItemClick(getItem(position))
                 }
