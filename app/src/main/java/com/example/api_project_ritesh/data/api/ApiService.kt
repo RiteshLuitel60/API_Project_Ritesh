@@ -10,7 +10,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
-    @POST("footscray/auth")
+    @POST("sydney/auth")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
     @GET("dashboard/{keypass}")
