@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.api_project_ritesh"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.api_project_ritesh"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
