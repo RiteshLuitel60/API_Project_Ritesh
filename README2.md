@@ -1,263 +1,284 @@
-# NIT3213 Final Assignment - Technical Documentation
+# API Project Ritesh - Technical Documentation
 
-## Project Structure and File Descriptions
+## Overview
 
-### 1. Application Setup Files
+This document provides detailed technical information about the API Project Ritesh Android application, focusing on implementation details, architecture decisions, and development guidelines.
 
-#### `MyApplication.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/`
-- **Purpose**: Application class with Hilt integration
-- **Key Features**:
-  - Annotated with `@HiltAndroidApp` for dependency injection
-  - Entry point for the application
-  - Initializes Hilt components
+## System Architecture
 
-#### `build.gradle.kts` (Project Level)
-- **Location**: Root directory
-- **Purpose**: Project-level build configuration
-- **Key Features**:
-  - Defines project-wide repositories
-  - Configures Hilt plugin
-  - Sets up build script dependencies
+### MVVM Architecture Implementation
 
-#### `build.gradle.kts` (App Level)
-- **Location**: `app/`
-- **Purpose**: App-level build configuration
-- **Key Features**:
-  - Defines app dependencies
-  - Configures Android build settings
-  - Sets up Kotlin and Hilt plugins
-  - Configures SDK versions and build tools
+The application follows the MVVM (Model-View-ViewModel) architecture pattern:
 
-### 2. Data Layer
+1. **Model Layer**
+   - `data/model/`: Contains data classes and entities
+   - `data/repository/`: Implements data operations and API interactions
+   - `data/api/`: Defines API interfaces and network configurations
 
-#### `ApiModels.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/data/model/`
-- **Purpose**: Data models for API communication
-- **Classes**:
-  - `LoginRequest`: Username and password for authentication
-  - `LoginResponse`: Contains keypass from successful login
-  - `DashboardResponse`: List of entities and total count
-  - `Entity`: Individual entity data structure
+2. **View Layer**
+   - `ui/login/`: Login screen implementation
+   - `ui/dashboard/`: Dashboard screen with RecyclerView
+   - `ui/details/`: Detailed view of architectural landmarks
+   - Uses ViewBinding for view access
+   - Implements Material Design components
 
-#### `ApiService.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/data/api/`
-- **Purpose**: Retrofit interface for API calls
-- **Endpoints**:
-  - `POST footscray/auth`: Login endpoint
-  - `GET dashboard/{keypass}`: Dashboard data endpoint
-- **Features**:
-  - Uses Retrofit annotations
-  - Defines suspend functions for coroutines
-  - Handles API responses
+3. **ViewModel Layer**
+   - `viewmodel/`: Contains ViewModels for each screen
+   - Manages UI state and business logic
+   - Handles data operations through repositories
 
-#### `ApiRepository.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/data/repository/`
-- **Purpose**: Repository pattern implementation
-- **Features**:
-  - Handles API calls through ApiService
-  - Provides clean API for ViewModels
-  - Implements error handling
-  - Uses Result type for success/failure
+### Dependency Injection
 
-### 3. Dependency Injection
+The project uses Hilt for dependency injection:
 
-#### `NetworkModule.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/di/`
-- **Purpose**: Hilt module for network dependencies
-- **Components**:
-  - `OkHttpClient`: HTTP client with logging
-  - `Retrofit`: API client setup
-  - `ApiService`: API interface implementation
-- **Features**:
-  - Singleton scoped dependencies
-  - Base URL configuration
-  - Interceptor setup
+```kotlin
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val repository: ApiRepository
+) : ViewModel()
+```
 
-### 4. ViewModels
+Key components:
+- `@HiltAndroidApp`: Application class annotation
+- `@AndroidEntryPoint`: Activity and Fragment annotations
+- `@Module` and `@Provides`: Dependency provision
+- `@Inject`: Constructor injection
 
-#### `LoginViewModel.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/viewmodel/`
-- **Purpose**: Manages login screen logic
-- **Features**:
-  - Handles login requests
-  - Manages loading state
-  - Provides login result to UI
-  - Uses coroutines for async operations
+## API Integration
 
-#### `DashboardViewModel.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/viewmodel/`
-- **Purpose**: Manages dashboard screen logic
-- **Features**:
-  - Loads dashboard data
-  - Manages entity selection
-  - Handles loading states
-  - Provides data to RecyclerView
+### Base Configuration
+```kotlin
+private const val BASE_URL = "https://nit3213api.onrender.com/"
+```
 
-### 5. UI Layer
+### API Endpoints
 
-#### Activities
+1. **Authentication**
+   ```kotlin
+   @POST("sydney/auth")
+   suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+   ```
 
-##### `LoginActivity.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/ui/login/`
-- **Purpose**: Login screen implementation
-- **Features**:
-  - User input handling
-  - Error display
-  - Navigation to dashboard
-  - Loading state management
+2. **Dashboard Data**
+   ```kotlin
+   @GET("dashboard/{keypass}")
+   suspend fun getDashboard(@Path("keypass") keypass: String): Response<DashboardResponse>
+   ```
 
-##### `DashboardActivity.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/ui/dashboard/`
-- **Purpose**: Dashboard screen implementation
-- **Features**:
-  - RecyclerView setup
-  - Entity list display
-  - Navigation to details
-  - Error handling
+### Data Models
 
-##### `DetailsActivity.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/ui/details/`
-- **Purpose**: Entity details screen
-- **Features**:
-  - Displays full entity information
-  - Handles intent extras
-  - Clean layout presentation
+1. **Login**
+   ```kotlin
+   data class LoginRequest(
+       val username: String,
+       val password: String
+   )
 
-#### Adapters
+   data class LoginResponse(
+       val keypass: String
+   )
+   ```
 
-##### `EntityAdapter.kt`
-- **Location**: `app/src/main/java/com/example/api_project_ritesh/ui/dashboard/`
-- **Purpose**: RecyclerView adapter for entities
-- **Features**:
-  - ListAdapter implementation
-  - ViewHolder pattern
-  - Click handling
-  - Efficient updates with DiffUtil
+2. **Architecture Data**
+   ```kotlin
+   data class DashboardResponse(
+       val entities: List<Entity>,
+       val entityTotal: Int
+   )
 
-### 6. Layouts
+   data class Entity(
+       val name: String,
+       val architect: String,
+       val location: String,
+       val yearCompleted: Int,
+       val style: String,
+       val height: Int,
+       val description: String
+   )
+   ```
 
-#### `activity_login.xml`
-- **Location**: `app/src/main/res/layout/`
-- **Purpose**: Login screen layout
-- **Components**:
-  - TextInputLayout for username
-  - TextInputLayout for password
-  - Login button
-  - Progress bar
-  - Error text view
+## UI Implementation
 
-#### `activity_dashboard.xml`
-- **Location**: `app/src/main/res/layout/`
-- **Purpose**: Dashboard screen layout
-- **Components**:
-  - RecyclerView
-  - Progress bar
-  - Error text view
+### Dashboard Screen
 
-#### `activity_details.xml`
-- **Location**: `app/src/main/res/layout/`
-- **Purpose**: Details screen layout
-- **Components**:
-  - CardView for entity details
-  - Text views for properties
-  - Scrollable layout
+1. **Layout Structure**
+   - RecyclerView with MaterialCardView items
+   - Each item displays:
+     - Building name (primary text)
+     - Architect (secondary text)
+   - Progress indicator for loading state
+   - Error message display
 
-#### `item_entity.xml`
-- **Location**: `app/src/main/res/layout/`
-- **Purpose**: RecyclerView item layout
-- **Components**:
-  - CardView for each entity
-  - Text views for properties
+2. **Adapter Implementation**
+   ```kotlin
+   class EntityAdapter(
+       private val onItemClick: (Entity) -> Unit
+   ) : ListAdapter<Entity, EntityViewHolder>(EntityDiffCallback())
+   ```
 
-### 7. Testing
+3. **Item Layout**
+   ```xml
+   <MaterialCardView>
+       <LinearLayout>
+           <TextView android:id="@+id/property1TextView" />
+           <TextView android:id="@+id/property2TextView" />
+       </LinearLayout>
+   </MaterialCardView>
+   ```
 
-#### `LoginViewModelTest.kt`
-- **Location**: `app/src/test/java/com/example/api_project_ritesh/viewmodel/`
-- **Purpose**: Unit tests for LoginViewModel
-- **Features**:
-  - Tests successful login
-  - Tests failed login
-  - Tests loading states
-  - Uses Mockito for mocking
-  - Uses Coroutines test utilities
+### Details Screen
 
-### 8. Configuration Files
+1. **Layout Structure**
+   - NestedScrollView for scrollable content
+   - MaterialCardView container
+   - Organized display of:
+     - Building name (24sp, bold)
+     - Architect information
+     - Location
+     - Year completed
+     - Architectural style
+     - Height in meters
+     - Detailed description
 
-#### `AndroidManifest.xml`
-- **Location**: `app/src/main/`
-- **Purpose**: App configuration
-- **Features**:
-  - Activity declarations
-  - Internet permission
-  - Application class declaration
-  - Theme configuration
+2. **Data Passing**
+   ```kotlin
+   companion object {
+       const val EXTRA_ENTITY_NAME = "extra_entity_name"
+       const val EXTRA_ENTITY_ARCHITECT = "extra_entity_architect"
+       // ... other extras
+   }
+   ```
 
-## How It All Works Together
+## Error Handling
 
-1. **Application Start**:
-   - `MyApplication` initializes Hilt
-   - Dependencies are injected through Hilt modules
+1. **Network Errors**
+   - Repository layer catches and wraps exceptions
+   - ViewModel exposes error states
+   - UI displays user-friendly error messages
 
-2. **Login Flow**:
-   - User enters credentials in `LoginActivity`
-   - `LoginViewModel` processes the request
-   - `ApiRepository` makes the API call
-   - On success, user is navigated to dashboard
+2. **Data Validation**
+   - Input validation in login screen
+   - Null safety checks throughout the app
+   - Proper error states for missing data
 
-3. **Dashboard Flow**:
-   - `DashboardActivity` receives keypass
-   - `DashboardViewModel` loads data
-   - `EntityAdapter` displays entities
-   - Clicking an entity navigates to details
+## Performance Considerations
 
-4. **Details Flow**:
-   - `DetailsActivity` receives entity data
-   - Displays full entity information
-   - Uses clean layout for presentation
+1. **Image Loading**
+   - Efficient image caching
+   - Proper image scaling
+   - Memory management
 
-## Key Design Patterns Used
+2. **List Performance**
+   - RecyclerView with ViewHolder pattern
+   - Efficient diffing with DiffUtil
+   - Proper view recycling
 
-1. **MVVM Architecture**:
-   - ViewModels for business logic
-   - Activities/Fragments for UI
-   - LiveData for reactive updates
-
-2. **Repository Pattern**:
-   - Clean API for data access
-   - Separation of concerns
-   - Error handling
-
-3. **Dependency Injection**:
-   - Hilt for DI
-   - Singleton scoping
-   - Clean dependency management
-
-4. **Adapter Pattern**:
-   - RecyclerView adapter
-   - ViewHolder pattern
-   - Efficient list updates
-
-## Best Practices Implemented
-
-1. **Code Organization**:
-   - Clear package structure
-   - Separation of concerns
-   - Clean architecture principles
-
-2. **Error Handling**:
-   - Proper error states
-   - User feedback
-   - Network error handling
-
-3. **Performance**:
-   - Efficient RecyclerView
-   - Coroutines for async operations
+3. **Memory Management**
    - Proper lifecycle management
+   - Coroutine scope handling
+   - Resource cleanup
 
-4. **Testing**:
-   - Unit tests
-   - Mocking
-   - Test utilities
+## Testing Strategy
 
-This documentation provides a comprehensive overview of the project's structure and implementation. Each component is designed to work together seamlessly while maintaining clean architecture principles and following Android best practices. 
+1. **Unit Tests**
+   - ViewModel testing
+   - Repository testing
+   - Data model validation
+
+2. **UI Tests**
+   - Activity navigation
+   - User interaction
+   - Error state handling
+
+## Build Configuration
+
+### Dependencies
+
+```gradle
+dependencies {
+    // Core Android
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    
+    // UI Components
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    
+    // Architecture Components
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+    
+    // Dependency Injection
+    implementation 'com.google.dagger:hilt-android:2.50'
+    kapt 'com.google.dagger:hilt-compiler:2.50'
+    
+    // Networking
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
+    
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+}
+```
+
+## Development Guidelines
+
+1. **Code Style**
+   - Follow Kotlin coding conventions
+   - Use meaningful variable and function names
+   - Document public APIs
+   - Keep functions focused and small
+
+2. **Architecture Rules**
+   - ViewModels should not hold View references
+   - Repositories should be the single source of truth
+   - Use LiveData for UI state management
+   - Implement proper error handling
+
+3. **UI Guidelines**
+   - Follow Material Design principles
+   - Support different screen sizes
+   - Implement proper error states
+   - Provide loading indicators
+
+## Future Improvements
+
+1. **Planned Features**
+   - Image gallery for each landmark
+   - Search functionality
+   - Favorites system
+   - Offline support
+
+2. **Technical Improvements**
+   - Implement caching
+   - Add analytics
+   - Improve error handling
+   - Add more unit tests
+
+## Troubleshooting
+
+Common issues and solutions:
+
+1. **API Connection Issues**
+   - Check internet connectivity
+   - Verify API endpoint
+   - Check authentication token
+
+2. **UI Rendering Problems**
+   - Verify data binding
+   - Check layout constraints
+   - Validate data models
+
+3. **Performance Issues**
+   - Monitor memory usage
+   - Check for memory leaks
+   - Optimize image loading
+
+## Support
+
+For technical support or questions:
+1. Check the documentation
+2. Review the code comments
+3. Submit an issue on the repository
+4. Contact the development team 

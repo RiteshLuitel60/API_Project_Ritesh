@@ -1,72 +1,83 @@
-# NIT3213 Final Assignment - Android Application
+# API Project Ritesh
 
-This Android application demonstrates API integration, user interface design, and Android development best practices. The app features three main screens: Login, Dashboard, and Details, interacting with the 'vu-nit3213-api'.
+An Android application that demonstrates API integration and modern Android development practices. The app allows users to explore famous architectural landmarks through a clean and intuitive interface.
 
 ## Features
 
-- **Login Screen**: Secure authentication using student credentials
-- **Dashboard Screen**: Displays a list of entities in a RecyclerView
-- **Details Screen**: Shows detailed information about selected entities
-- **Modern Architecture**: Uses MVVM, Clean Architecture, and Dependency Injection
-- **Unit Tests**: Comprehensive testing for critical components
+- **Authentication**: Secure login system with username/password authentication
+- **Dashboard**: Displays a list of famous architectural landmarks
+  - Shows building name and architect for each entry
+  - Clean card-based UI design
+  - Clickable items for detailed view
+- **Detailed View**: Comprehensive information about each architectural landmark
+  - Building name
+  - Architect
+  - Location
+  - Year completed
+  - Architectural style
+  - Height (in meters)
+  - Detailed description
 
 ## Technical Stack
 
-- Kotlin
-- Hilt for Dependency Injection
-- Retrofit for API calls
-- Coroutines for asynchronous operations
-- ViewModel and LiveData
-- Navigation Component
-- Material Design Components
+- **Language**: Kotlin
+- **Architecture**: MVVM (Model-View-ViewModel)
+- **Dependencies**:
+  - Hilt for dependency injection
+  - Retrofit for API communication
+  - Coroutines for asynchronous operations
+  - ViewBinding for view access
+  - Material Design components for UI
 
 ## Project Structure
 
 ```
 app/
-├── src/
-│   ├── main/
-│   │   ├── java/com/example/api_project_ritesh/
-│   │   │   ├── di/           # Dependency Injection
-│   │   │   ├── data/         # Data layer
-│   │   │   │   ├── api/      # API interfaces
-│   │   │   │   ├── model/    # Data models
-│   │   │   │   └── repository/# Repositories
-│   │   │   ├── ui/           # UI layer
-│   │   │   │   ├── login/
-│   │   │   │   ├── dashboard/
-│   │   │   │   └── details/
-│   │   │   └── viewmodel/    # ViewModels
-│   │   └── res/              # Resources
-│   └── test/                 # Unit tests
+├── data/
+│   ├── api/           # API service and network related code
+│   ├── model/         # Data models
+│   └── repository/    # Repository layer for data operations
+├── di/                # Dependency injection modules
+├── ui/
+│   ├── dashboard/     # Dashboard screen implementation
+│   ├── details/       # Details screen implementation
+│   └── login/         # Login screen implementation
+└── viewmodel/         # ViewModels for each screen
 ```
 
-## Setup Instructions
+## API Integration
+
+The app integrates with a REST API that provides:
+- Authentication endpoint for user login
+- Dashboard endpoint that returns architectural landmark data
+- Each landmark includes comprehensive details like name, architect, location, etc.
+
+## Getting Started
 
 1. Clone the repository
 2. Open the project in Android Studio
-3. Sync Gradle files
-4. Run the application on an emulator or physical device
+3. Build and run the application
+4. Use the following credentials for testing:
+   - Username: (your test username)
+   - Password: (your test password)
 
-## API Details
+## Architecture Data
 
-Base URL: https://nit3213api.onrender.com/
+The app displays information about famous architectural landmarks including:
+- Eiffel Tower (Paris, France)
+- Taj Mahal (Agra, India)
+- Sydney Opera House (Sydney, Australia)
+- Fallingwater (Pennsylvania, USA)
+- Burj Khalifa (Dubai, UAE)
+- Guggenheim Museum Bilbao (Bilbao, Spain)
+- Pantheon (Rome, Italy)
 
-### Endpoints:
-- Login: `/footscray/auth` (POST)
-- Dashboard: `/dashboard/{keypass}` (GET)
+Each landmark entry includes detailed information about its architectural significance, history, and specifications.
 
-## Testing
+## Contributing
 
-Run unit tests using:
-```bash
-./gradlew test
-```
-
-## Author
-
-Ritesh Luitel
+Feel free to submit issues and enhancement requests.
 
 ## License
 
-This project is for educational purposes only. 
+This project is licensed under the MIT License - see the LICENSE file for details. 
