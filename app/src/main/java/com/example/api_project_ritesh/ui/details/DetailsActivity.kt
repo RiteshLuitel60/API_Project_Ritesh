@@ -1,10 +1,12 @@
 package com.example.api_project_ritesh.ui.details
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.api_project_ritesh.R
 import com.example.api_project_ritesh.databinding.ActivityDetailsBinding
+import com.example.api_project_ritesh.ui.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,6 +22,19 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Set up toolbar back button
+        binding.topAppBar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        // Set up logout button
+        binding.logoutButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        }
 
         @Suppress("UNCHECKED_CAST")
         val entity = intent.getSerializableExtra(EXTRA_ENTITY) as? HashMap<String, Any?>
