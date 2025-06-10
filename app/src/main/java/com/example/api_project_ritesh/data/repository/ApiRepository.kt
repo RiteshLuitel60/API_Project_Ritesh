@@ -2,6 +2,8 @@ package com.example.api_project_ritesh.data.repository
 
 import com.example.api_project_ritesh.data.api.ApiService
 import com.example.api_project_ritesh.data.model.DashboardResponse
+import com.example.api_project_ritesh.data.model.DashboardResponseRaw
+import com.example.api_project_ritesh.data.model.Entity
 import com.example.api_project_ritesh.data.model.LoginRequest
 import com.example.api_project_ritesh.data.model.LoginResponse
 import javax.inject.Inject
@@ -29,8 +31,10 @@ class ApiRepository @Inject constructor(
         return try {
             val response = apiService.getDashboard(keypass)
             if (response.isSuccessful) {
-                response.body()?.let { Result.success(it) }
-                    ?: Result.failure(Exception("Empty response body"))
+                response.body()?.let { rawResponse ->
+                    val wrappedEntities = rawResponse.entities.map { Entity(it) }
+                    Result.success(DashboardResponse(wrappedEntities, rawResponse.entityTotal))
+                } ?: Result.failure(Exception("Empty response body"))
             } else {
                 Result.failure(Exception("Failed to fetch dashboard: ${response.code()}"))
             }

@@ -35,17 +35,11 @@ class DashboardActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = EntityAdapter { entity ->
             viewModel.selectEntity(entity)
-            startActivity(
-                Intent(this, DetailsActivity::class.java).apply {
-                    putExtra(DetailsActivity.EXTRA_ENTITY_NAME, entity.name)
-                    putExtra(DetailsActivity.EXTRA_ENTITY_ARCHITECT, entity.architect)
-                    putExtra(DetailsActivity.EXTRA_ENTITY_LOCATION, entity.location)
-                    putExtra(DetailsActivity.EXTRA_ENTITY_YEAR, entity.yearCompleted.toString())
-                    putExtra(DetailsActivity.EXTRA_ENTITY_STYLE, entity.style)
-                    putExtra(DetailsActivity.EXTRA_ENTITY_HEIGHT, entity.height.toString())
-                    putExtra(DetailsActivity.EXTRA_ENTITY_DESCRIPTION, entity.description)
-                }
-            )
+            val map = HashMap<String, Any?>(entity)
+            val intent = Intent(this, DetailsActivity::class.java).apply {
+                putExtra(DetailsActivity.EXTRA_ENTITY, map)
+            }
+            startActivity(intent)
         }
 
         binding.recyclerView.apply {

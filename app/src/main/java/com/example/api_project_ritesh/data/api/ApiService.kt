@@ -1,6 +1,6 @@
 package com.example.api_project_ritesh.data.api
 
-import com.example.api_project_ritesh.data.model.DashboardResponse
+import com.example.api_project_ritesh.data.model.DashboardResponseRaw
 import com.example.api_project_ritesh.data.model.LoginRequest
 import com.example.api_project_ritesh.data.model.LoginResponse
 import retrofit2.Response
@@ -14,5 +14,5 @@ interface ApiService {
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
     @GET("dashboard/{keypass}")
-    suspend fun getDashboard(@Path("keypass") keypass: String): Response<DashboardResponse>
+    suspend fun getDashboard(@Path("keypass") keypass: String): Response<DashboardResponseRaw>
 } 
