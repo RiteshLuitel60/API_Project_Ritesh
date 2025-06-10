@@ -24,30 +24,45 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/nameTextView"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Property 1"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/property1TextView"
+                    android:id="@+id/architectTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Property 2"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/property2TextView"
+                    android:id="@+id/locationTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/yearTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/styleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/heightTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:textSize="18sp" />
 
                 <TextView
@@ -61,7 +76,7 @@
                     android:id="@+id/descriptionTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="8dp"
                     android:textSize="16sp" />
 
             </LinearLayout>

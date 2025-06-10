@@ -39,14 +39,14 @@ class EntityAdapter(
         }
 
         fun bind(entity: Entity) {
-            binding.property1TextView.text = entity.property1
-            binding.property2TextView.text = entity.property2
+            binding.property1TextView.text = entity.name
+            binding.property2TextView.text = "Architect: ${entity.architect}"
         }
     }
 
     private class EntityDiffCallback : DiffUtil.ItemCallback<Entity>() {
         override fun areItemsTheSame(oldItem: Entity, newItem: Entity): Boolean {
-            return oldItem.property1 == newItem.property1
+            return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(oldItem: Entity, newItem: Entity): Boolean {

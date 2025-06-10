@@ -15,7 +15,11 @@ data class DashboardResponse(
 )
 
 data class Entity(
-    val property1: String,
-    val property2: String,
+    val name: String,
+    val architect: String,
+    val location: String,
+    val yearCompleted: Int,
+    val style: String,
+    val height: Int,
     val description: String
 ) 
