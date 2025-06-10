@@ -13,6 +13,7 @@
         android:background="@color/colorPrimary"
         app:titleTextColor="@color/colorOnPrimary"
         app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:navigationIconTint="@android:color/black"
         app:title="Dashboard"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
