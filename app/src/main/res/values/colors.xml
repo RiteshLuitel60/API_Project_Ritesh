@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#1976D2</color> <!-- Blue 700 -->
+    <color name="colorPrimaryDark">#0D47A1</color> <!-- Blue 900 -->
+    <color name="colorAccent">#1976D2</color> <!-- Blue 700 -->
+    <color name="colorBackground">#FFFFFF</color> <!-- White -->
+    <color name="colorSurface">#F5F7FA</color> <!-- Light gray for cards -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- White text on blue -->
+    <color name="colorOnBackground">#111111</color> <!-- Black text -->
+    <color name="colorSecondaryText">#444444</color> <!-- Dark gray text -->
+    <color name="colorError">#D32F2F</color> <!-- Red for errors -->
 </resources>
