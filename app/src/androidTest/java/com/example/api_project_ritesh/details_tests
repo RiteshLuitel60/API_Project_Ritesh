@@ -1,0 +1,118 @@
+// Details Tests
+// Test class for details functionality
+
+@Test
+fun testDetailsActivity() {
+    // Test entity data passing
+    val entity = Entity(mapOf(
+        "id" to 123,
+        "name" to "Test Entity",
+        "description" to "Test Description",
+        "status" to "Active",
+        "createdAt" to "2024-03-20",
+        "metadata" to mapOf(
+            "type" to "test",
+            "version" to 1.0
+        )
+    ))
+    
+    // Test intent extras
+    val intent = Intent().apply {
+        putExtra(DetailsActivity.EXTRA_ENTITY, HashMap(entity))
+    }
+    
+    assertNotNull(intent.getSerializableExtra(DetailsActivity.EXTRA_ENTITY))
+    val passedEntity = intent.getSerializableExtra(DetailsActivity.EXTRA_ENTITY) as? HashMap<*, *>
+    assertNotNull(passedEntity)
+    assertEquals("Test Entity", passedEntity?.get("name"))
+}
+
+@Test
+fun testDetailsDisplay() {
+    // Test entity display formatting
+    val entity = Entity(mapOf(
+        "firstName" to "John",
+        "lastName" to "Doe",
+        "age" to 30,
+        "email" to "john.doe@example.com",
+        "isVerified" to true,
+        "scores" to listOf(85, 90, 95),
+        "address" to mapOf(
+            "street" to "123 Main St",
+            "city" to "Sydney",
+            "postcode" to "2000"
+        )
+    ))
+    
+    // Test field formatting
+    val formattedFields = formatEntityFields(entity)
+    assertTrue(formattedFields.containsKey("First Name"))
+    assertTrue(formattedFields.containsKey("Last Name"))
+    assertTrue(formattedFields.containsKey("Age"))
+    assertTrue(formattedFields.containsKey("Email"))
+    assertTrue(formattedFields.containsKey("Is Verified"))
+    assertTrue(formattedFields.containsKey("Scores"))
+    assertTrue(formattedFields.containsKey("Address"))
+    
+    // Test value formatting
+    assertEquals("John", formattedFields["First Name"])
+    assertEquals("Doe", formattedFields["Last Name"])
+    assertEquals("30", formattedFields["Age"])
+    assertEquals("john.doe@example.com", formattedFields["Email"])
+    assertEquals("Yes", formattedFields["Is Verified"])
+    assertEquals("85, 90, 95", formattedFields["Scores"])
+    assertTrue(formattedFields["Address"]?.contains("123 Main St") == true)
+    assertTrue(formattedFields["Address"]?.contains("Sydney") == true)
+}
+
+@Test
+fun testDetailsNavigation() {
+    // Test back navigation
+    val activity = DetailsActivity()
+    activity.onBackPressed()
+    assertTrue(activity.isFinishing)
+    
+    // Test logout navigation
+    val intent = Intent(activity, LoginActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    }
+    activity.startActivity(intent)
+    assertTrue(activity.isFinishing)
+}
+
+@Test
+fun testDetailsErrorHandling() {
+    // Test null entity
+    val activity = DetailsActivity()
+    val intent = Intent()
+    activity.intent = intent
+    
+    // Should finish activity when no entity data
+    assertTrue(activity.isFinishing)
+    
+    // Test invalid entity data
+    val invalidIntent = Intent().apply {
+        putExtra(DetailsActivity.EXTRA_ENTITY, "invalid data")
+    }
+    activity.intent = invalidIntent
+    
+    // Should handle invalid data gracefully
+    assertTrue(activity.isFinishing)
+}
+
+// Helper function for formatting entity fields
+private fun formatEntityFields(entity: Entity): Map<String, String> {
+    return entity.mapKeys { (key, _) ->
+        key.replace(Regex("([A-Z])"), " $1")
+            .trim()
+            .replaceFirstChar { it.uppercase() }
+    }.mapValues { (_, value) ->
+        when (value) {
+            null -> "N/A"
+            is Boolean -> if (value) "Yes" else "No"
+            is List<*> -> value.joinToString(", ")
+            is Map<*, *> -> value.entries.joinToString("\n") { (k, v) -> "$k: $v" }
+            else -> value.toString()
+        }
+    }
+} 

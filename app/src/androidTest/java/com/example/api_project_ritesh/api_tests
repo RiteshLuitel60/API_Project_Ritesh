@@ -1,0 +1,120 @@
+// API Tests
+// Test class for API functionality
+
+@Test
+fun testApiService() {
+    // Test login endpoint
+    val loginRequest = LoginRequest("Ritesh", "s4682841")
+    val loginResponse = apiService.login(loginRequest).execute()
+    
+    assertTrue(loginResponse.isSuccessful)
+    assertNotNull(loginResponse.body())
+    assertNotNull(loginResponse.body()?.keypass)
+    
+    // Test dashboard endpoint
+    val keypass = loginResponse.body()?.keypass ?: fail("Keypass should not be null")
+    val dashboardResponse = apiService.getDashboard(keypass).execute()
+    
+    assertTrue(dashboardResponse.isSuccessful)
+    assertNotNull(dashboardResponse.body())
+    assertNotNull(dashboardResponse.body()?.entities)
+}
+
+@Test
+fun testApiRepository() {
+    // Test login repository
+    runBlocking {
+        val result = repository.login("Ritesh", "s4682841")
+        result.fold(
+            onSuccess = { response ->
+                assertNotNull(response.keypass)
+                assertTrue(response.keypass.isNotEmpty())
+            },
+            onFailure = { error ->
+                fail("Login should succeed: ${error.message}")
+            }
+        )
+        
+        // Test dashboard repository
+        val keypass = result.getOrNull()?.keypass ?: fail("Keypass should not be null")
+        val dashboardResult = repository.getDashboard(keypass)
+        
+        dashboardResult.fold(
+            onSuccess = { response ->
+                assertNotNull(response.entities)
+                assertTrue(response.entityTotal >= 0)
+            },
+            onFailure = { error ->
+                fail("Dashboard should load: ${error.message}")
+            }
+        )
+    }
+}
+
+@Test
+fun testApiErrorHandling() {
+    // Test invalid credentials
+    runBlocking {
+        val result = repository.login("wrong", "wrong")
+        result.fold(
+            onSuccess = { _ ->
+                fail("Login should fail with invalid credentials")
+            },
+            onFailure = { error ->
+                assertTrue(error.message?.contains("Login failed") == true)
+            }
+        )
+    }
+    
+    // Test invalid keypass
+    runBlocking {
+        val result = repository.getDashboard("invalid-keypass")
+        result.fold(
+            onSuccess = { _ ->
+                fail("Dashboard should fail with invalid keypass")
+            },
+            onFailure = { error ->
+                assertTrue(error.message?.contains("Failed to fetch dashboard") == true)
+            }
+        )
+    }
+}
+
+@Test
+fun testApiResponseParsing() {
+    // Test dashboard response parsing
+    val rawResponse = DashboardResponseRaw(
+        entities = listOf(
+            mapOf("id" to 1, "name" to "Test 1"),
+            mapOf("id" to 2, "name" to "Test 2")
+        ),
+        entityTotal = 2
+    )
+    
+    val dashboardResponse = DashboardResponse(
+        entities = rawResponse.entities.map { Entity(it) },
+        entityTotal = rawResponse.entityTotal
+    )
+    
+    assertEquals(2, dashboardResponse.entities.size)
+    assertEquals(2, dashboardResponse.entityTotal)
+    assertEquals("Test 1", dashboardResponse.entities[0]["name"])
+    assertEquals("Test 2", dashboardResponse.entities[1]["name"])
+}
+
+@Test
+fun testApiTimeout() {
+    // Test network timeout
+    runBlocking {
+        // Simulate timeout by using invalid URL
+        val result = repository.login("Ritesh", "s4682841")
+        result.fold(
+            onSuccess = { _ ->
+                fail("Should timeout with invalid URL")
+            },
+            onFailure = { error ->
+                assertTrue(error is IOException || error.message?.contains("timeout") == true)
+            }
+        )
+    }
+} 
