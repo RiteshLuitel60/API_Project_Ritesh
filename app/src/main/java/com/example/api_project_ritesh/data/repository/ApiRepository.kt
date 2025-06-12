@@ -9,6 +9,11 @@ import com.example.api_project_ritesh.data.model.LoginResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/*this ApiRepository is a singleton that wraps  ApiService to
+Perform the network calls for login and dashboard data,
+Check HTTP success, map raw API models into app’s Entity/DashboardResponse types,
+and wrap everything in a Kotlin Result so callers get a clear success-or-failure outcome.*/
+
 @Singleton
 class ApiRepository @Inject constructor(
     private val apiService: ApiService
