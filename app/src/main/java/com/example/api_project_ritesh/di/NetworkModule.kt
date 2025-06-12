@@ -1,3 +1,4 @@
+// Dependency injection module for network components - provides Retrofit and API service instances
 package com.example.api_project_ritesh.di
 
 import com.example.api_project_ritesh.data.api.ApiService

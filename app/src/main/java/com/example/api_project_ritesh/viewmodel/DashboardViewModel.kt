@@ -1,3 +1,4 @@
+// ViewModel for dashboard screen - manages architectural landmarks data and selection state
 package com.example.api_project_ritesh.viewmodel
 
 import androidx.lifecycle.LiveData

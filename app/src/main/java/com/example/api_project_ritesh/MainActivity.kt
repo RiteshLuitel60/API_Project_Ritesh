@@ -1,3 +1,4 @@
+// Main activity of the application - handles edge-to-edge display and system bar insets
 package com.example.api_project_ritesh
 
 import android.os.Bundle

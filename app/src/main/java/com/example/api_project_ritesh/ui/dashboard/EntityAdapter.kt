@@ -1,3 +1,4 @@
+// RecyclerView adapter for displaying architectural landmarks in a list
 package com.example.api_project_ritesh.ui.dashboard
 
 import android.view.LayoutInflater

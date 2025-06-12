@@ -1,3 +1,4 @@
+// Dashboard screen activity - displays list of architectural landmarks and handles navigation
 package com.example.api_project_ritesh.ui.dashboard
 
 import android.content.Intent

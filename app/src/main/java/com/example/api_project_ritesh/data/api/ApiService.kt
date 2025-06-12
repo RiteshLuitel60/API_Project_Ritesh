@@ -1,3 +1,4 @@
+// Retrofit interface defining API endpoints for authentication and dashboard data
 package com.example.api_project_ritesh.data.api
 
 import com.example.api_project_ritesh.data.model.DashboardResponseRaw

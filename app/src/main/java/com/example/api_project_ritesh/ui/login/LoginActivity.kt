@@ -1,3 +1,4 @@
+// Login screen activity - handles user authentication and navigation to dashboard
 package com.example.api_project_ritesh.ui.login
 
 import android.content.Intent

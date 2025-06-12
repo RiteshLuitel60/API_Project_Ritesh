@@ -1,3 +1,4 @@
+// Details screen activity - displays comprehensive information about selected architectural landmark
 package com.example.api_project_ritesh.ui.details
 
 import android.content.Intent

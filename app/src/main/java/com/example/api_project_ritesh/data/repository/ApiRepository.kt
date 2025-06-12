@@ -1,3 +1,4 @@
+// Repository class that handles API calls and data transformation - manages network operations and error handling
 package com.example.api_project_ritesh.data.repository
 
 import com.example.api_project_ritesh.data.api.ApiService
@@ -11,7 +12,7 @@ import javax.inject.Singleton
 
 /*this ApiRepository is a singleton that wraps  ApiService to
 Perform the network calls for login and dashboard data,
-Check HTTP success, map raw API models into app’s Entity/DashboardResponse types,
+Check HTTP success, map raw API models into app's Entity/DashboardResponse types,
 and wrap everything in a Kotlin Result so callers get a clear success-or-failure outcome.*/
 
 @Singleton

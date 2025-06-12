@@ -1,3 +1,4 @@
+// Data models for API requests and responses - includes login and dashboard data structures
 package com.example.api_project_ritesh.data.model
 
 import java.io.Serializable

@@ -1,3 +1,4 @@
+// ViewModel for handling login functionality - manages authentication state and API calls
 package com.example.api_project_ritesh.viewmodel
 
 import androidx.lifecycle.LiveData
