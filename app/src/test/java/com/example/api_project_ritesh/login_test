@@ -1,0 +1,61 @@
+// Login Tests
+// Test class for login functionality
+
+@Test
+fun testLoginRequest() {
+    // Test valid login request
+    val request = LoginRequest("Ritesh", "s4682841")
+    assertEquals("Ritesh", request.username)
+    assertEquals("s4682841", request.password)
+
+    // Test empty fields
+    val emptyRequest = LoginRequest("", "")
+    assertTrue(emptyRequest.username.isEmpty())
+    assertTrue(emptyRequest.password.isEmpty())
+}
+
+@Test
+fun testLoginResponse() {
+    // Test successful login response
+    val response = LoginResponse("test-key-123")
+    assertNotNull(response.keypass)
+    assertTrue(response.keypass.isNotEmpty())
+    assertEquals("test-key-123", response.keypass)
+}
+
+@Test
+fun testLoginViewModel() {
+    // Test login state
+    viewModel.login("Ritesh", "s4682841")
+    assertTrue(viewModel.isLoading.value == true)
+
+    // Wait for login response
+    // Verify login result
+    assertNotNull(viewModel.loginResult.value)
+    viewModel.loginResult.value?.fold(
+        onSuccess = { response ->
+            assertNotNull(response.keypass)
+        },
+        onFailure = { error ->
+            fail("Login should succeed")
+        }
+    )
+}
+
+@Test
+fun testLoginValidation() {
+    // Test empty validation
+    assertFalse(isValidLogin("", ""))
+
+    // Test valid credentials
+    assertTrue(isValidLogin("Ritesh", "s4682841"))
+
+    // Test invalid format
+    assertFalse(isValidLogin("R", "short"))
+}
+
+// Helper function for login validation
+private fun isValidLogin(username: String, password: String): Boolean {
+    return username.isNotBlank() && password.isNotBlank() &&
+           username.length >= 3 && password.length >= 6
+}

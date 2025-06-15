@@ -1,0 +1,119 @@
+// Dashboard Tests
+// Test class for dashboard functionality
+
+@Test
+fun testDashboardResponse() {
+    // Create test entities
+    val entity1 = Entity(mapOf(
+        "id" to 1,
+        "name" to "Test Item 1",
+        "status" to "Active"
+    ))
+    
+    val entity2 = Entity(mapOf(
+        "id" to 2,
+        "name" to "Test Item 2",
+        "status" to "Inactive"
+    ))
+
+    // Test dashboard response
+    val response = DashboardResponse(
+        entities = listOf(entity1, entity2),
+        entityTotal = 2
+    )
+
+    assertEquals(2, response.entities.size)
+    assertEquals(2, response.entityTotal)
+    assertEquals("Test Item 1", response.entities[0]["name"])
+    assertEquals("Test Item 2", response.entities[1]["name"])
+}
+
+@Test
+fun testDashboardViewModel() {
+    // Test loading state
+    viewModel.loadDashboard("test-key-123")
+    assertTrue(viewModel.isLoading.value == true)
+
+    // Test dashboard data
+    viewModel.dashboardData.observeForever { result ->
+        result.fold(
+            onSuccess = { response ->
+                assertNotNull(response.entities)
+                assertTrue(response.entities.isNotEmpty())
+                assertEquals(2, response.entityTotal)
+            },
+            onFailure = { error ->
+                fail("Dashboard should load successfully")
+            }
+        )
+    }
+}
+
+@Test
+fun testEntityAdapter() {
+    // Create test data
+    val entities = listOf(
+        Entity(mapOf("id" to 1, "name" to "Item 1")),
+        Entity(mapOf("id" to 2, "name" to "Item 2")),
+        Entity(mapOf("id" to 3, "name" to "Item 3"))
+    )
+
+    // Test adapter
+    val adapter = EntityAdapter { entity ->
+        // Test click callback
+        assertNotNull(entity)
+        assertEquals("Item 1", entity["name"])
+    }
+
+    // Test list updates
+    adapter.submitList(entities)
+    assertEquals(3, adapter.itemCount)
+    
+    // Test item binding
+    val viewHolder = adapter.createViewHolder(parent, 0)
+    adapter.bindViewHolder(viewHolder, 0)
+    assertEquals("Item 1", viewHolder.binding.property1TextView.text)
+}
+
+@Test
+fun testEntityDetails() {
+    // Test entity with various data types
+    val entity = Entity(mapOf(
+        "id" to 123,
+        "name" to "Test Entity",
+        "isActive" to true,
+        "score" to 95.5,
+        "tags" to listOf("tag1", "tag2"),
+        "metadata" to mapOf("key" to "value")
+    ))
+
+    // Test data access
+    assertEquals(123, entity["id"])
+    assertEquals("Test Entity", entity["name"])
+    assertEquals(true, entity["isActive"])
+    assertEquals(95.5, entity["score"])
+    
+    // Test list field
+    val tags = entity["tags"] as? List<*>
+    assertNotNull(tags)
+    assertEquals(2, tags?.size)
+    assertEquals("tag1", tags?.get(0))
+    
+    // Test map field
+    val metadata = entity["metadata"] as? Map<*, *>
+    assertNotNull(metadata)
+    assertEquals("value", metadata?.get("key"))
+}
+
+@Test
+fun testEmptyDashboard() {
+    // Test empty state
+    val emptyResponse = DashboardResponse(emptyList(), 0)
+    assertEquals(0, emptyResponse.entities.size)
+    assertEquals(0, emptyResponse.entityTotal)
+    
+    // Test adapter with empty list
+    val adapter = EntityAdapter { _ -> }
+    adapter.submitList(emptyList())
+    assertEquals(0, adapter.itemCount)
+} 

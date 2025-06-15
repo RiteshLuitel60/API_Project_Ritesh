@@ -1,0 +1,208 @@
+// ViewModel Tests
+// Test class for LoginViewModel and DashboardViewModel functionality
+
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.api_project_ritesh.data.model.LoginResponse
+import com.example.api_project_ritesh.data.repository.ApiRepository
+import com.example.api_project_ritesh.viewmodel.LoginViewModel
+import com.example.api_project_ritesh.viewmodel.DashboardViewModel
+import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.junit.Rule
+import org.junit.Assert.*
+
+@HiltAndroidTest
+@RunWith(AndroidJUnit4::class)
+class ViewModelTests {
+
+    @get:Rule
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+    @Mock
+    private lateinit var mockRepository: ApiRepository
+
+    private lateinit var loginViewModel: LoginViewModel
+    private lateinit var dashboardViewModel: DashboardViewModel
+
+    @Before
+    fun setup() {
+        loginViewModel = LoginViewModel(mockRepository)
+        dashboardViewModel = DashboardViewModel(mockRepository)
+    }
+
+    // Login ViewModel Tests
+    @Test
+    fun testLoginSuccess() = runBlocking {
+        // Test successful login
+        val username = "Ritesh"
+        val password = "s4682841"
+        val expectedResponse = LoginResponse("test-key-123")
+        
+        `when`(mockRepository.login(username, password))
+            .thenReturn(Result.success(expectedResponse))
+
+        loginViewModel.login(username, password)
+
+        // Verify repository call and response
+        verify(mockRepository).login(username, password)
+        assertNotNull(loginViewModel.loginResult.value)
+        
+        loginViewModel.loginResult.value?.fold(
+            onSuccess = { response ->
+                assertEquals(expectedResponse.keypass, response.keypass)
+            },
+            onFailure = { fail("Login should succeed") }
+        )
+    }
+
+    @Test
+    fun testLoginFailure() = runBlocking {
+        // Test login failure
+        val username = "wrong"
+        val password = "wrong"
+        val expectedError = Exception("Invalid credentials")
+        
+        `when`(mockRepository.login(username, password))
+            .thenReturn(Result.failure(expectedError))
+
+        loginViewModel.login(username, password)
+
+        // Verify error handling
+        verify(mockRepository).login(username, password)
+        assertNotNull(loginViewModel.loginResult.value)
+        
+        loginViewModel.loginResult.value?.fold(
+            onSuccess = { fail("Login should fail") },
+            onFailure = { error ->
+                assertEquals(expectedError.message, error.message)
+            }
+        )
+    }
+
+    @Test
+    fun testLoginLoadingState() = runBlocking {
+        // Test loading state during login
+        val username = "Ritesh"
+        val password = "s4682841"
+        val expectedResponse = LoginResponse("test-key-123")
+        
+        `when`(mockRepository.login(username, password))
+            .thenReturn(Result.success(expectedResponse))
+
+        loginViewModel.login(username, password)
+
+        // Verify loading state changes
+        assertTrue(loginViewModel.isLoading.value == true)
+        Thread.sleep(100) // Wait for coroutine
+        assertTrue(loginViewModel.isLoading.value == false)
+    }
+
+    // Dashboard ViewModel Tests
+    @Test
+    fun testDashboardLoadSuccess() = runBlocking {
+        // Test successful dashboard load
+        val keypass = "test-key-123"
+        val testEntities = listOf(
+            mapOf("id" to "1", "name" to "Test Entity 1"),
+            mapOf("id" to "2", "name" to "Test Entity 2")
+        )
+        
+        `when`(mockRepository.getDashboard(keypass))
+            .thenReturn(Result.success(DashboardResponse(
+                entities = testEntities.map { Entity(it) },
+                entityTotal = testEntities.size
+            )))
+
+        dashboardViewModel.loadDashboard(keypass)
+
+        // Verify data loading
+        verify(mockRepository).getDashboard(keypass)
+        assertNotNull(dashboardViewModel.dashboardData.value)
+        
+        dashboardViewModel.dashboardData.value?.fold(
+            onSuccess = { response ->
+                assertEquals(testEntities.size, response.entities.size)
+                assertEquals(testEntities.size, response.entityTotal)
+            },
+            onFailure = { fail("Dashboard load should succeed") }
+        )
+    }
+
+    @Test
+    fun testDashboardLoadFailure() = runBlocking {
+        // Test dashboard load failure
+        val keypass = "invalid-key"
+        val expectedError = Exception("Invalid keypass")
+        
+        `when`(mockRepository.getDashboard(keypass))
+            .thenReturn(Result.failure(expectedError))
+
+        dashboardViewModel.loadDashboard(keypass)
+
+        // Verify error handling
+        verify(mockRepository).getDashboard(keypass)
+        assertNotNull(dashboardViewModel.dashboardData.value)
+        
+        dashboardViewModel.dashboardData.value?.fold(
+            onSuccess = { fail("Dashboard load should fail") },
+            onFailure = { error ->
+                assertEquals(expectedError.message, error.message)
+            }
+        )
+    }
+
+    @Test
+    fun testDashboardLoadingState() = runBlocking {
+        // Test loading state during dashboard load
+        val keypass = "test-key-123"
+        
+        `when`(mockRepository.getDashboard(keypass))
+            .thenReturn(Result.success(DashboardResponse(emptyList(), 0)))
+
+        dashboardViewModel.loadDashboard(keypass)
+
+        // Verify loading state changes
+        assertTrue(dashboardViewModel.isLoading.value == true)
+        Thread.sleep(100) // Wait for coroutine
+        assertTrue(dashboardViewModel.isLoading.value == false)
+    }
+
+    @Test
+    fun testEntitySelection() {
+        // Test entity selection in dashboard
+        val testEntity = Entity(mapOf(
+            "id" to "1",
+            "name" to "Test Entity",
+            "description" to "Test Description"
+        ))
+
+        dashboardViewModel.selectEntity(testEntity)
+
+        // Verify entity selection
+        assertEquals(testEntity, dashboardViewModel.selectedEntity.value)
+        assertEquals("1", dashboardViewModel.selectedEntity.value?.get("id"))
+        assertEquals("Test Entity", dashboardViewModel.selectedEntity.value?.get("name"))
+    }
+
+    // Helper function to validate login credentials
+    private fun isValidCredentials(username: String, password: String): Boolean {
+        return username.isNotBlank() && password.isNotBlank() &&
+               username.length >= 3 && password.length >= 6
+    }
+
+    @Test
+    fun testCredentialValidation() {
+        // Test credential validation
+        assertTrue(isValidCredentials("Ritesh", "s4682841"))
+        assertFalse(isValidCredentials("", ""))
+        assertFalse(isValidCredentials("Ri", "123"))
+        assertFalse(isValidCredentials("Ritesh", "123"))
+    }
+} 
