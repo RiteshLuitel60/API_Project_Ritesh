@@ -107,8 +107,8 @@ The project uses the following major dependencies:
 
 ### 7. Testing Credentials
 For testing the application, use the following credentials:
-- Username: test_user
-- Password: test_password
+- Username: Ritesh
+- Password: s4682841
 
 ### Troubleshooting
 If you encounter any issues:
