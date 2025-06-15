@@ -118,10 +118,4 @@ If you encounter any issues:
 4. Check that your Android SDK and build tools are up to date
 5. Verify that you have accepted all necessary SDK licenses
 
-## Contributing
 
-Feel free to submit issues and enhancement requests.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details. 
