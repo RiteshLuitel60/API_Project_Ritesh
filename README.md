@@ -1,22 +1,17 @@
 # API Project Ritesh
 
-An Android application that demonstrates API integration and modern Android development practices. The app allows users to explore famous architectural landmarks through a clean and intuitive interface.
+A modern Android application that demonstrates API integration and follows best practices in Android development. The app showcases a clean architecture implementation with a focus on maintainability and scalability.
 
 ## Features
 
 - **Authentication**: Secure login system with username/password authentication
-- **Dashboard**: Displays a list of famous architectural landmarks
-  - Shows building name and architect for each entry
-  - Clean card-based UI design
+- **Dashboard**: Displays a list of items in a clean, modern interface
+  - Card-based UI design
   - Clickable items for detailed view
-- **Detailed View**: Comprehensive information about each architectural landmark
-  - Building name
-  - Architect
-  - Location
-  - Year completed
-  - Architectural style
-  - Height (in meters)
-  - Detailed description
+- **Detailed View**: Comprehensive information display
+  - Clean and intuitive user interface
+  - Responsive design
+  - Efficient data loading
 
 ## Technical Stack
 
@@ -44,13 +39,6 @@ app/
 │   └── login/         # Login screen implementation
 └── viewmodel/         # ViewModels for each screen
 ```
-
-## API Integration
-
-The app integrates with a REST API that provides:
-- Authentication endpoint for user login
-- Dashboard endpoint that returns architectural landmark data
-- Each landmark includes comprehensive details like name, architect, location, etc.
 
 ## Prerequisites
 
@@ -129,19 +117,6 @@ If you encounter any issues:
 3. Clean and rebuild the project (Build > Clean Project, then Build > Rebuild Project)
 4. Check that your Android SDK and build tools are up to date
 5. Verify that you have accepted all necessary SDK licenses
-
-## Architecture Data
-
-The app displays information about famous architectural landmarks including:
-- Eiffel Tower (Paris, France)
-- Taj Mahal (Agra, India)
-- Sydney Opera House (Sydney, Australia)
-- Fallingwater (Pennsylvania, USA)
-- Burj Khalifa (Dubai, UAE)
-- Guggenheim Museum Bilbao (Bilbao, Spain)
-- Pantheon (Rome, Italy)
-
-Each landmark entry includes detailed information about its architectural significance, history, and specifications.
 
 ## Contributing
 
